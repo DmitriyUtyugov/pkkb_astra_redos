@@ -1,0 +1,46 @@
+#!/bin/bash
+
+astralinux="astra"
+redos="redos"
+
+check_linux_version() { 
+  linux_version=""
+  if [ $(cat /etc/os-release | grep redos | wc -l) -gt 0 ]; then
+    linux_version="$redos"
+  elif [ $(cat /etc/os-release | grep astra | wc -l) -gt 0 ]; then
+    linux_version="$astralinux"
+  fi
+}
+
+
+check_linux_version
+echo $linux_version
+
+weasis_link_redos="https://github.com/nroduit/Weasis/releases/download/v4.5.1/weasis-4.5.1-1.x86_64.rpm"
+weasis_link_astra="https://github.com/nroduit/Weasis/releases/download/v4.0.3/weasis_4.0.3-1_amd64.deb"
+
+
+download_weasis_dicom_viewer() {
+  case $linux_version in 
+    $astralinux)
+      wget -O /home/user/weasis.deb "$weasis_link_astra"
+      ;;
+    $redos)
+      wget -O /home/user/weasis.rpm "$weasis_link_redos"
+      ;;
+  esac
+}
+
+install_weassi_dicom_viewer() {
+case $linux_version in 
+    $astralinux)
+      dpkg -i /home/user/weasis.deb
+      ;;
+    $redos)
+      rpm -i /home/user/weasis.rpm
+      ;;
+  esac
+}
+
+#download_weasis_dicom_viewer
+install_weassi_dicom_viewer
